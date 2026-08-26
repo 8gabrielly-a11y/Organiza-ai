@@ -471,3 +471,17 @@
 - [x] Incluir mensagens do histórico nos resultados da busca.
 - [x] Criar modo de demonstração isolado para novos usuários.
 - [x] Melhorar a exportação ICS com fuso America/Sao_Paulo explícito.
+
+## Adaptação para Vercel
+
+- [x] Mapear a incompatibilidade atual entre o servidor Express/tRPC e o runtime do Vercel.
+- [x] Criar adaptador serverless e configuração de build para o Vercel.
+- [x] Ajustar rotas, frontend e variáveis de ambiente para o deploy externo.
+- [x] Validar login, cadastro, API e isolamento por usuário no ambiente adaptado.
+
+## Adaptação para Vercel
+
+- [x] Adaptar o backend Express/tRPC para um entrypoint compatível com Vercel Functions
+- [x] Configurar roteamento Vercel para API serverless e SPA Vite
+- [x] Validar build, TypeScript e smoke test do endpoint de saúde
+- [x] Documentar variáveis de ambiente necessárias no Vercel
