@@ -1,0 +1,1 @@
+ALTER TABLE `planner_items` ADD `googleEventId` varchar(320);

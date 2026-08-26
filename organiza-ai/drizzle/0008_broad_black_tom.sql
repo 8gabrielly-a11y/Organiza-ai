@@ -1,0 +1,1 @@
+ALTER TABLE `planner_items` ADD `detailsNeeded` boolean DEFAULT false NOT NULL;

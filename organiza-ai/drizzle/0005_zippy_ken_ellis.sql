@@ -1,0 +1,2 @@
+ALTER TABLE `calendar_connections` ADD `icsToken` varchar(96) NOT NULL;--> statement-breakpoint
+ALTER TABLE `calendar_connections` ADD CONSTRAINT `calendar_connections_icsToken_unique` UNIQUE(`icsToken`);

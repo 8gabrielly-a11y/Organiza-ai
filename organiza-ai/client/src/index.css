@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme inline {
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-mono: 'DM Mono', monospace;
+  --color-background: oklch(0.975 0.012 150);
+  --color-foreground: oklch(0.23 0.025 165);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.23 0.025 165);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.23 0.025 165);
+  --color-primary: oklch(0.45 0.11 160);
+  --color-primary-foreground: oklch(0.99 0.01 150);
+  --color-secondary: oklch(0.93 0.03 150);
+  --color-secondary-foreground: oklch(0.32 0.05 160);
+  --color-muted: oklch(0.95 0.015 155);
+  --color-muted-foreground: oklch(0.48 0.025 165);
+  --color-accent: oklch(0.93 0.035 160);
+  --color-accent-foreground: oklch(0.3 0.06 160);
+  --color-border: oklch(0.89 0.022 155);
+  --color-input: oklch(0.89 0.022 155);
+  --color-ring: oklch(0.55 0.11 160);
+  --color-sidebar: oklch(0.965 0.018 155);
+  --color-sidebar-foreground: oklch(0.25 0.035 165);
+  --color-sidebar-border: oklch(0.88 0.025 155);
+  --color-sidebar-accent: oklch(0.92 0.04 160);
+  --color-sidebar-accent-foreground: oklch(0.28 0.06 160);
+  --color-sidebar-ring: oklch(0.55 0.11 160);
+  --radius: 0.9rem;
+}
+
+:root { font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif; color: oklch(0.23 0.025 165); background: oklch(0.975 0.012 150); font-synthesis: none; }
+* { border-color: oklch(0.89 0.022 155); }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: radial-gradient(circle at 80% -10%, rgba(167, 243, 208, .28), transparent 35%), radial-gradient(circle at 0% 30%, rgba(224, 231, 255, .18), transparent 30%), oklch(0.975 0.012 150); }
+button, input, textarea { font: inherit; }
+:focus-visible { outline: 3px solid oklch(0.63 0.15 160); outline-offset: 3px; }
+::selection { background: oklch(0.83 0.16 160); color: oklch(0.2 0.03 165); }
+.font-display { font-family: 'Playfair Display', Georgia, serif; }
+
+@media (prefers-reduced-motion: no-preference) {
+  button, a, [role="button"] { transition: transform 160ms cubic-bezier(.23,1,.32,1), background-color 180ms ease, color 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
+  button:active, [role="button"]:active { transform: scale(.97); }
+}
