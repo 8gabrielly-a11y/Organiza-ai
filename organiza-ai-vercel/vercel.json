@@ -4,11 +4,5 @@
   "outputDirectory": "dist/public",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "functions": {
-    "api/[...path].ts": {
-      "runtime": "nodejs22.x",
-      "maxDuration": 60
-    }
-  }
+  ]
 }

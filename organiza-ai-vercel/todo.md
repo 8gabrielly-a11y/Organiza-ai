@@ -485,3 +485,9 @@
 - [x] Configurar roteamento Vercel para API serverless e SPA Vite
 - [x] Validar build, TypeScript e smoke test do endpoint de saúde
 - [x] Documentar variáveis de ambiente necessárias no Vercel
+
+## Bug reportado: runtime inválido no Vercel
+
+- [x] Corrigir o formato da configuração de runtime rejeitada pelo Vercel.
+- [x] Validar a configuração corrigida com build e inspeção do JSON.
+- [x] Recriar e testar o ZIP para novo envio ao GitHub/Vercel.

@@ -11,3 +11,14 @@
 O projeto atual usa Express, tRPC e Vite no mesmo processo. A adaptação precisa manter o servidor Express como uma função Node.js e servir os assets do Vite separadamente, com um `vercel.json` que encaminhe `/api/*` para a função e as demais rotas para o frontend. O diretório raiz do Vercel deve ser `organiza-ai`, porque o repositório GitHub contém o projeto dentro dessa subpasta.
 
 O deploy externo também exige que as variáveis de ambiente do projeto sejam cadastradas no Vercel. Arquivos `.env` não devem ser enviados ao repositório.
+
+## Diagnóstico do erro de runtime
+
+O Vercel rejeitou o `vercel.json` com `Function Runtimes must have a valid version` porque `functions.*.runtime` é destinado a runtimes externos versionados, enquanto Node.js é o runtime nativo da plataforma. A versão do Node.js deve ser escolhida nas configurações do projeto ou sobrescrita por `engines.node` no `package.json`, por exemplo `"node": "22.x"`.
+
+Fontes adicionais consultadas:
+
+- https://vercel.com/docs/functions/runtimes/node-js/node-js-versions — versões disponíveis e configuração por `engines.node`.
+- https://vercel.com/docs/project-configuration/vercel-json — `functions` e configuração de funções no `vercel.json`.
+
+Correção prevista: remover o bloco `functions` com `runtime` do `vercel.json` e declarar `engines.node` no `package.json`, mantendo a função catch-all detectada automaticamente pelo Vercel.

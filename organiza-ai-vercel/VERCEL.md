@@ -2,9 +2,9 @@
 
 ## Configuração do projeto
 
-Ao importar o repositório no Vercel, defina **Root Directory** como `organiza-ai` quando o repositório tiver essa pasta como subdiretório. O projeto já contém `vercel.json`, portanto o build usa `pnpm build` e publica `dist/public` como frontend estático. As requisições para `/api/*` são atendidas pela função Node.js em `api/[...path].ts`, que encaminha as rotas ao Express e ao tRPC.
+Ao importar o repositório no Vercel, defina **Root Directory** como `organiza-ai` quando o repositório tiver essa pasta como subdiretório. O projeto já contém `vercel.json`, portanto o build usa `pnpm build` e publica `dist/public` como frontend estático. As requisições para `/api/*` são atendidas pela função Node.js em `api/[...path].ts`, que encaminha as rotas ao Express e ao tRPC. A versão nativa do Node.js é definida por `engines.node` no `package.json`; não é necessário declarar `functions.*.runtime` no `vercel.json`.
 
-Não selecione um template de site estático que substitua a configuração existente. O sintoma de o código-fonte aparecer como texto geralmente indica que o diretório raiz ou o output do build foi configurado para a pasta errada.
+Não selecione um template de site estático que substitua a configuração existente. O sintoma de o código-fonte aparecer como texto geralmente indica que o diretório raiz ou o output do build foi configurado para a pasta errada. Se surgir o erro `Function Runtimes must have a valid version`, remova qualquer `runtime` manual do `vercel.json`; runtimes externos usam outro formato, enquanto Node.js é nativo e sua versão é controlada pelo projeto.
 
 ## Variáveis de ambiente
 
