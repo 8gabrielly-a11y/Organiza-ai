@@ -572,3 +572,16 @@
 
 - [x] Detectar respostas não-JSON no fetch do tRPC e exibir uma mensagem operacional clara em vez de `Unexpected token '<'`.
 - [x] Adicionar teste unitário para o comportamento do fetch quando o deployment retorna HTML; `fetchGuard.test.ts` foi incluído no Vitest.
+
+## 404 público da função tRPC no Vercel
+
+- [ ] Confirmar quais funções o Vercel detectou no deployment atual e por que `/api/trpc` retorna `NOT_FOUND`.
+- [ ] Adaptar os entrypoints para o formato de handler HTTP reconhecido pelo runtime Node do Vercel.
+- [ ] Validar `/api/health` e `/api/trpc` localmente no bundle final e gerar ZIP para novo redeploy.
+
+## Adaptação serverless — diagnóstico público
+
+- [x] Corrigir `FUNCTION_INVOCATION_FAILED` em `/api/health` e `/api/trpc` no deployment Vercel ativo.
+- [x] Expor o app Express por um handler Node explícito compatível com o runtime do Vercel.
+- [x] Adicionar teste de regressão para invocação do handler com objetos request/response Node.
+- [ ] Validar deployment público, gerar ZIP final e documentar sincronização/redeploy.

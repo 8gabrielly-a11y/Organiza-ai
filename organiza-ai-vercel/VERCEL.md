@@ -2,7 +2,7 @@
 
 ## Configuração do projeto
 
-Ao importar o repositório no Vercel, defina **Root Directory** como `organiza-ai-vercel`, pois esse é o nome da pasta que contém o projeto no repositório GitHub atual. Se você mover os arquivos do projeto para a raiz do repositório, use `.` em vez disso. O projeto já contém `vercel.json`, portanto o build usa `pnpm build` e publica `dist/public` como frontend estático. As requisições para `/api/*` são atendidas pela função Node.js em `api/[...path].ts`, que encaminha as rotas ao Express e ao tRPC. O fallback da SPA exclui explicitamente `/api/*`; sem essa exclusão, o login recebe `index.html` em vez de JSON. A versão nativa do Node.js é definida por `engines.node` no `package.json`; não é necessário declarar `functions.*.runtime` no `vercel.json`.
+Ao importar o repositório no Vercel, defina **Root Directory** como `organiza-ai-vercel`, pois esse é o nome da pasta que contém o projeto no repositório GitHub atual. Se você mover os arquivos do projeto para a raiz do repositório, use `.` em vez disso. O projeto já contém `vercel.json`, portanto o build usa `pnpm build` e publica `dist/public` como frontend estático. As requisições para `/api/*` são atendidas pela função Node.js em `api/[...path].ts`, que encaminha as rotas ao handler explícito de `api/index.ts`; esse handler chama o app Express e o tRPC. O fallback da SPA exclui explicitamente `/api/*`; sem essa exclusão, o login recebe `index.html` em vez de JSON. A versão nativa do Node.js é definida por `engines.node` no `package.json`; não é necessário declarar `functions.*.runtime` no `vercel.json`.
 
 Não selecione um template de site estático que substitua a configuração existente. O sintoma de o código-fonte aparecer como texto geralmente indica que o diretório raiz ou o output do build foi configurado para a pasta errada. Se surgir o erro `Function Runtimes must have a valid version`, remova qualquer `runtime` manual do `vercel.json`; runtimes externos usam outro formato, enquanto Node.js é nativo e sua versão é controlada pelo projeto.
 
@@ -37,6 +37,6 @@ Depois de conhecer o domínio gerado pelo Vercel, atualize `GOOGLE_REDIRECT_URI`
 
 ## Validação do bundle e após o primeiro deploy
 
-O backend deve usar imports relativos nos módulos carregados pela função. Aliases como `@shared/*` podem ser aceitos pelo TypeScript local, mas não devem permanecer no bundle de runtime do backend. Antes do push, valide `pnpm exec tsc --noEmit`, `pnpm test` e `pnpm build`. O carregamento do bundle Node também deve ser testado; a função precisa exportar uma aplicação Express válida.
+O backend deve usar imports relativos nos módulos carregados pela função. Aliases como `@shared/*` podem ser aceitos pelo TypeScript local, mas não devem permanecer no bundle de runtime do backend. Antes do push, valide `pnpm exec tsc --noEmit`, `pnpm test` e `pnpm build`. O carregamento do bundle Node também deve ser testado; o entrypoint precisa exportar um handler Node chamável e manter o app Express nomeado para os testes locais.
 
 Use `/api/health` para confirmar que a função serverless está respondendo. Depois valide login, carregamento da Home, envio de uma mensagem, criação de item na Agenda, exportação ICS e logout. Verifique os logs da função caso `/api/health` funcione, mas uma rota tRPC específica falhe.

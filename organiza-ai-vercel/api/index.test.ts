@@ -1,11 +1,11 @@
 import { createServer, type Server } from "node:http";
 import { afterEach, describe, expect, it } from "vitest";
-import app from "./index";
+import handler, { app } from "./index";
 
 const servers: Server[] = [];
 
-async function startTestServer() {
-  const server = createServer(app);
+async function startTestServer(requestHandler = app) {
+  const server = createServer(requestHandler as never);
   servers.push(server);
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
   const address = server.address();
@@ -25,6 +25,13 @@ afterEach(async () => {
 });
 
 describe("Vercel Express adapter", () => {
+  it("invokes the explicit Node handler and responds with JSON", async () => {
+    const { baseUrl } = await startTestServer(handler);
+    const response = await fetch(`${baseUrl}/api/health`);
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({ ok: true, service: "organiza-ai" });
+  });
+
   it("responds with JSON from the health endpoint with and without the api prefix", async () => {
     const { baseUrl } = await startTestServer();
 

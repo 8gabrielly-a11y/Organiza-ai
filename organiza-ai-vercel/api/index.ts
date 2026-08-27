@@ -9,7 +9,7 @@ import { registerReminderRoutes } from "../server/reminderRoutes";
 import { appRouter } from "../server/routers";
 import { createContext } from "../server/_core/context";
 
-const app = express();
+export const app = express();
 
 // Depending on the Vercel routing mode, a catch-all function can receive the
 // path with or without the `/api` prefix. Normalize it before route matching so
@@ -53,4 +53,10 @@ app.use((error: unknown, _req: HttpRequest, res: HttpResponse, next: HttpNext) =
   res.status(500).json({ error: "Internal server error" });
 });
 
-export default app;
+// Export a plain Node-style handler explicitly. Vercel supports exporting an Express
+// app directly, but a function wrapper is more robust when the project also has
+// SPA rewrites and a dynamic catch-all function.
+export default function handler(req: HttpRequest, res: HttpResponse) {
+  return app(req as never, res as never);
+}
+
