@@ -1,4 +1,4 @@
-import express from "express";
+import express, { type NextFunction, type Request, type Response } from "express";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "../server/_core/oauth";
 import { registerStorageProxy } from "../server/_core/storageProxy";
@@ -13,7 +13,7 @@ const app = express();
 // Depending on the Vercel routing mode, a catch-all function can receive the
 // path with or without the `/api` prefix. Normalize it before route matching so
 // tRPC, OAuth and calendar endpoints behave identically in both cases.
-app.use((req, _res, next) => {
+app.use((req: Request, _res: Response, next: NextFunction) => {
   if (!req.url.startsWith("/api")) {
     req.url = `/api${req.url.startsWith("/") ? req.url : `/${req.url}`}`;
   }
@@ -43,7 +43,7 @@ app.use((req, res) => {
   res.status(404).json({ error: "Not found", path: req.path });
 });
 
-app.use((error: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((error: unknown, _req: Request, res: Response, next: NextFunction) => {
   if (res.headersSent) {
     next(error);
     return;

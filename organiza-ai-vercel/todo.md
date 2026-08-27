@@ -498,3 +498,17 @@
 - [x] Corrigir o tratamento do cadastro para aceitar respostas válidas e exibir erros úteis.
 - [x] Adicionar teste de regressão para cadastro bem-sucedido e resposta inválida.
 - [x] Validar TypeScript, testes, build e fluxo serverless de autenticação.
+
+## Diagnóstico do deployment Vercel reportado
+
+- [ ] Identificar os 11 erros e 7 avisos exibidos nos logs do deployment.
+- [ ] Remover ou alinhar a substituição da versão do Node.js no painel do Vercel.
+- [ ] Corrigir incompatibilidades de configuração encontradas nos logs.
+- [ ] Revalidar build e funcionamento do entrypoint serverless após o novo deploy.
+
+## Correção dos erros TypeScript no build Vercel
+
+- [ ] Corrigir parâmetros Express implicitamente tipados como `any` em `api/index.ts`.
+- [ ] Corrigir o uso incompatível de `Response` e `NextFunction` no middleware de erro serverless.
+- [ ] Corrigir a tipagem da instância Express e dos parâmetros em `server/googleCalendarRoutes.ts`.
+- [ ] Validar TypeScript, testes, build e pacote final após as correções.
