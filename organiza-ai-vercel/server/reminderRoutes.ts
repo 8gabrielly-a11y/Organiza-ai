@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { and, eq } from "drizzle-orm";
 import { sdk } from "./_core/sdk";
 import { getDb, getPlannerSnapshot, createPlannerNotification, chatMessages } from "./db";
@@ -28,7 +28,7 @@ export async function deliverUpcomingReminder(userId: number) {
 }
 
 export function registerReminderRoutes(app: Express) {
-  app.post("/api/scheduled/reminders", async (req, res) => {
+  app.post("/api/scheduled/reminders", async (req: Request, res: Response) => {
     try {
       const user = await sdk.authenticateRequest(req);
       if (!user.isCron || !user.taskUid) return res.status(403).json({ error: "cron-only" });

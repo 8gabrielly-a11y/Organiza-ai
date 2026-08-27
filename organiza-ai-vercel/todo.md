@@ -501,14 +501,21 @@
 
 ## Diagnóstico do deployment Vercel reportado
 
-- [ ] Identificar os 11 erros e 7 avisos exibidos nos logs do deployment.
+- [x] Identificar os 11 erros e 7 avisos exibidos nos logs do deployment; os erros eram TypeScript no adaptador Express/Google Calendar e os avisos incluíam Node.js sobrescrito e scripts de build não aprovados.
 - [ ] Remover ou alinhar a substituição da versão do Node.js no painel do Vercel.
-- [ ] Corrigir incompatibilidades de configuração encontradas nos logs.
-- [ ] Revalidar build e funcionamento do entrypoint serverless após o novo deploy.
+- [x] Corrigir incompatibilidades de configuração encontradas nos logs; os tipos Express foram alinhados e o teste de regressão foi incluído no Vitest.
+- [x] Revalidar localmente o build e o funcionamento do entrypoint serverless após as correções; o novo deploy remoto ainda depende da ação no painel do Vercel.
 
 ## Correção dos erros TypeScript no build Vercel
 
-- [ ] Corrigir parâmetros Express implicitamente tipados como `any` em `api/index.ts`.
-- [ ] Corrigir o uso incompatível de `Response` e `NextFunction` no middleware de erro serverless.
-- [ ] Corrigir a tipagem da instância Express e dos parâmetros em `server/googleCalendarRoutes.ts`.
-- [ ] Validar TypeScript, testes, build e pacote final após as correções.
+- [x] Corrigir parâmetros Express implicitamente tipados como `any` em `api/index.ts`.
+- [x] Corrigir o uso incompatível de `Response` e `NextFunction` no middleware de erro serverless.
+- [x] Corrigir a tipagem da instância Express e dos parâmetros em `server/googleCalendarRoutes.ts`.
+- [x] Validar TypeScript, testes, build e pacote final após as correções.
+
+## Erros adicionais do log completo do Vercel
+
+- [ ] Tipar `Request`, `Response`, `Express` e callbacks em `server/routers.ts`, `server/_core/oauth.ts`, `server/_core/storageProxy.ts` e `server/_core/sdk.ts`.
+- [ ] Tipar a normalização de protocolo e ajustar `CookieOptions` em `server/_core/cookies.ts`.
+- [ ] Executar o compilador com a mesma versão TypeScript detectada pelo Vercel e eliminar todos os erros restantes.
+- [ ] Recriar o ZIP final sem artefatos e documentar a configuração Node.js 22.x no Vercel.

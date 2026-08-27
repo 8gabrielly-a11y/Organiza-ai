@@ -1,9 +1,9 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { getCalendarConnectionByIcsToken, getPlannerSnapshot } from "./db";
 import { buildPlannerIcs } from "./ics";
 
 export function registerIcsRoutes(app: Express) {
-  app.get("/api/calendar/ics/:token", async (req, res) => {
+  app.get("/api/calendar/ics/:token", async (req: Request, res: Response) => {
     const token = req.params.token;
     if (!token || token.length < 32) {
       res.status(404).end();
