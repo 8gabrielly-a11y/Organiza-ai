@@ -491,3 +491,10 @@
 - [x] Corrigir o formato da configuração de runtime rejeitada pelo Vercel.
 - [x] Validar a configuração corrigida com build e inspeção do JSON.
 - [x] Recriar e testar o ZIP para novo envio ao GitHub/Vercel.
+
+## Bug reportado: cadastro com resposta JSON incompleta
+
+- [x] Identificar por que o fluxo de cadastro tenta interpretar uma resposta vazia como JSON.
+- [x] Corrigir o tratamento do cadastro para aceitar respostas válidas e exibir erros úteis.
+- [x] Adicionar teste de regressão para cadastro bem-sucedido e resposta inválida.
+- [x] Validar TypeScript, testes, build e fluxo serverless de autenticação.

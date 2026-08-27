@@ -22,3 +22,7 @@ Fontes adicionais consultadas:
 - https://vercel.com/docs/project-configuration/vercel-json — `functions` e configuração de funções no `vercel.json`.
 
 Correção prevista: remover o bloco `functions` com `runtime` do `vercel.json` e declarar `engines.node` no `package.json`, mantendo a função catch-all detectada automaticamente pelo Vercel.
+
+## Relação com o erro de cadastro
+
+A documentação oficial atual do Vercel confirma que Express pode ser implantado com detecção automática do entrypoint, e que a seleção da versão Node.js é separada da configuração de runtimes externos. O deployment do screenshot usava o commit `9412609`, cujo `vercel.json` ainda continha `runtime: "nodejs22.x"`; o commit seguinte `b3d4ac4` já removeu esse campo. Isso indica que o screenshot foi capturado em uma versão intermediária/antiga do repositório. O fluxo local do mesmo código respondeu `200` com `{ success: true }` para `auth.register`; a próxima validação deve ocorrer após redeploy do commit corrigido e com as variáveis `DATABASE_URL` e `JWT_SECRET` configuradas.
