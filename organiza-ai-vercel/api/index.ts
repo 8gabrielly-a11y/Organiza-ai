@@ -14,6 +14,7 @@ const app = express();
 // Depending on the Vercel routing mode, a catch-all function can receive the
 // path with or without the `/api` prefix. Normalize it before route matching so
 // tRPC, OAuth and calendar endpoints behave identically in both cases.
+app.use((req: HttpRequest, _res: HttpResponse, next: HttpNext) => {
   if (!req.url.startsWith("/api")) {
     req.url = `/api${req.url.startsWith("/") ? req.url : `/${req.url}`}`;
   }
