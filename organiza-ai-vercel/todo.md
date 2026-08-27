@@ -522,6 +522,37 @@
 
 ## Incompatibilidade persistente de tipos Express no Vercel
 
-- [ ] Unificar a resolução de `express` e `@types/express` no build remoto e eliminar os métodos ausentes em `Request`, `Response` e `Express`.
-- [ ] Validar o adaptador e as rotas com a configuração equivalente ao compilador do Vercel.
-- [ ] Recriar e testar o ZIP final após a correção definitiva.
+- [x] Unificar a resolução de `express` e `@types/express` no build remoto e eliminar os métodos ausentes em `Request`, `Response` e `Express` usando contratos HTTP estruturais locais.
+- [x] Validar o adaptador e as rotas com a configuração equivalente ao compilador do Vercel; TypeScript, 73 testes e build passaram localmente.
+- [x] Recriar e testar o ZIP final após a correção definitiva; o arquivo foi verificado com `unzip -t` e não contém dependências, build ou segredos.
+
+## Bug atual: login retorna resposta JSON vazia no Vercel
+
+- [ ] Identificar se a resposta vazia ocorre no endpoint `/api/trpc/auth.login` ou no cliente tRPC.
+- [ ] Garantir resposta JSON válida e tratamento de erro não-JSON para login e cadastro.
+- [ ] Adicionar regressão para autenticação quando o servidor retorna corpo vazio.
+- [ ] Validar o fluxo de login, build, testes e gerar ZIP atualizado.
+
+## Bloqueio confirmado no deployment público
+
+- [ ] Desativar ou ajustar o Deployment Protection/Vercel Authentication para permitir chamadas públicas a `/api/trpc` e `/api/health`.
+- [ ] Melhorar a mensagem do cliente quando o Vercel retornar HTML, redirecionamento ou corpo não-JSON em vez da resposta tRPC.
+- [ ] Validar login e cadastro depois que o deployment estiver acessível sem o bloqueio.
+
+## Nova restrição de hospedagem
+
+- [ ] Comparar alternativas externas ao Manus para publicar o stack React/Vite + Express/tRPC + MySQL.
+- [ ] Escolher uma alternativa que não dependa de preview protegido do Vercel.
+- [ ] Entregar instruções práticas de configuração e publicação da alternativa escolhida.
+
+## Erro persistente no domínio público `organiza-ai-eta.vercel.app`
+
+- [ ] Capturar status, headers e corpo bruto de `/api/health` e `/api/trpc/auth.login` no domínio público.
+- [ ] Identificar se o deployment público está usando o commit e o entrypoint corretos.
+- [ ] Corrigir a resposta vazia do login/cadastro ou orientar a variável/configuração faltante.
+- [ ] Validar a correção no domínio público e gerar ZIP se houver alteração de código.
+
+## Causa confirmada do erro público de autenticação
+
+- [ ] Alterar o rewrite global do `vercel.json` para não capturar `/api/*`, permitindo que `/api/health` e `/api/trpc/*` cheguem às funções serverless.
+- [ ] Testar publicamente que `/api/health` retorna JSON e que `/api/trpc/auth.login` não retorna `index.html` nem corpo vazio.
