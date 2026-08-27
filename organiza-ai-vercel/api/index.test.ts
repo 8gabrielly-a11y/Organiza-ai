@@ -35,17 +35,28 @@ describe("Vercel Express adapter", () => {
     }
   });
 
+  it("returns a JSON 404 from the root fallback instead of HTML", async () => {
+    const { baseUrl } = await startTestServer();
+    const response = await fetch(`${baseUrl}/`);
+
+    expect(response.status).toBe(404);
+    expect(response.headers.get("content-type")).toContain("application/json");
+    await expect(response.json()).resolves.toEqual({ error: "Not found", path: "/api/" });
+  });
+
   it("keeps tRPC validation errors as JSON instead of an empty response", async () => {
     const { baseUrl } = await startTestServer();
-    const response = await fetch(`${baseUrl}/trpc/auth.register?batch=1`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ 0: { json: { name: "Bia", email: "invalid@example.com", password: "curta" } } }),
-    });
+    for (const path of ["/trpc/auth.register?batch=1", "/api/trpc/auth.register?batch=1"]) {
+      const response = await fetch(`${baseUrl}${path}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ 0: { json: { name: "Bia", email: "invalid@example.com", password: "curta" } } }),
+      });
 
-    const payload = await response.json() as Array<{ error?: { json?: { message?: string; data?: { code?: string } } } }>;
-    expect(response.status).toBe(400);
-    expect(payload[0]?.error?.json?.data?.code).toBe("BAD_REQUEST");
-    expect(payload[0]?.error?.json?.message).toContain("password");
+      const payload = await response.json() as Array<{ error?: { json?: { message?: string; data?: { code?: string } } } }>;
+      expect(response.status).toBe(400);
+      expect(payload[0]?.error?.json?.data?.code).toBe("BAD_REQUEST");
+      expect(payload[0]?.error?.json?.message).toContain("password");
+    }
   });
 });

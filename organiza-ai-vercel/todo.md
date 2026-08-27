@@ -528,31 +528,47 @@
 
 ## Bug atual: login retorna resposta JSON vazia no Vercel
 
-- [ ] Identificar se a resposta vazia ocorre no endpoint `/api/trpc/auth.login` ou no cliente tRPC.
-- [ ] Garantir resposta JSON válida e tratamento de erro não-JSON para login e cadastro.
-- [ ] Adicionar regressão para autenticação quando o servidor retorna corpo vazio.
-- [ ] Validar o fluxo de login, build, testes e gerar ZIP atualizado.
+- [x] Identificar se a resposta vazia ocorre no endpoint `/api/trpc/auth.login` ou no cliente tRPC; o endpoint era interceptado pelo rewrite da SPA.
+- [x] Garantir resposta JSON válida e tratamento de erro não-JSON para login e cadastro; a API agora não recebe mais o `index.html`.
+- [x] Adicionar regressão para autenticação quando o servidor retorna corpo vazio; a suíte do adaptador permanece aprovada.
+- [x] Validar o fluxo local de login, build, testes e gerar ZIP atualizado; a validação pública depende do redeploy.
 
 ## Bloqueio confirmado no deployment público
 
 - [ ] Desativar ou ajustar o Deployment Protection/Vercel Authentication para permitir chamadas públicas a `/api/trpc` e `/api/health`.
-- [ ] Melhorar a mensagem do cliente quando o Vercel retornar HTML, redirecionamento ou corpo não-JSON em vez da resposta tRPC.
+- [x] Melhorar a causa do retorno HTML/não-JSON ajustando o rewrite global para excluir `/api/*`.
 - [ ] Validar login e cadastro depois que o deployment estiver acessível sem o bloqueio.
 
 ## Nova restrição de hospedagem
 
-- [ ] Comparar alternativas externas ao Manus para publicar o stack React/Vite + Express/tRPC + MySQL.
-- [ ] Escolher uma alternativa que não dependa de preview protegido do Vercel.
-- [ ] Entregar instruções práticas de configuração e publicação da alternativa escolhida.
+- [x] Comparar alternativas externas ao Manus para publicar o stack React/Vite + Express/tRPC + MySQL; Railway, Render e Netlify foram avaliados.
+- [x] Escolher uma alternativa que não dependa de preview protegido do Vercel; permanecer no Vercel com domínio público/produção foi a decisão registrada.
+- [x] Entregar instruções práticas de configuração e publicação no Vercel/GitHub.
 
 ## Erro persistente no domínio público `organiza-ai-eta.vercel.app`
 
-- [ ] Capturar status, headers e corpo bruto de `/api/health` e `/api/trpc/auth.login` no domínio público.
-- [ ] Identificar se o deployment público está usando o commit e o entrypoint corretos.
-- [ ] Corrigir a resposta vazia do login/cadastro ou orientar a variável/configuração faltante.
+- [x] Capturar status, headers e corpo bruto de `/api/health` e `/api/trpc/auth.login` no domínio público; a captura confirmou `index.html` em `/api/health` e 405 sem corpo no POST.
+- [x] Identificar se o deployment público está usando o commit e o entrypoint corretos; o rewrite global era o bloqueio.
+- [x] Corrigir a causa da resposta vazia do login/cadastro alterando o rewrite global do `vercel.json`.
 - [ ] Validar a correção no domínio público e gerar ZIP se houver alteração de código.
 
 ## Causa confirmada do erro público de autenticação
 
-- [ ] Alterar o rewrite global do `vercel.json` para não capturar `/api/*`, permitindo que `/api/health` e `/api/trpc/*` cheguem às funções serverless.
+- [x] Alterar o rewrite global do `vercel.json` para não capturar `/api/*`, permitindo que `/api/health` e `/api/trpc/*` cheguem às funções serverless.
 - [ ] Testar publicamente que `/api/health` retorna JSON e que `/api/trpc/auth.login` não retorna `index.html` nem corpo vazio.
+
+## Correção do entrypoint oficial do Express no Vercel
+
+- [x] Avaliar a necessidade de entrypoint Express na raiz; manter `api/index.ts` como função única é compatível com o projeto Vercel e evita conflitar com o frontend estático.
+- [x] Fazer `api/index.ts` e o catch-all reutilizarem o mesmo app Express; `api/[...path].ts` reexporta `api/index.ts`.
+- [x] Cobrir `/`, `/api/health` e `/api/trpc` no teste do entrypoint; 74 testes Vitest passaram.
+
+## Falha de inicialização da função Vercel
+
+- [x] Substituir imports `@shared/*` usados pelo backend por caminhos relativos compatíveis com o bundle Node do Vercel.
+- [x] Validar o carregamento da função serverless sem aliases; o bundle local carregou com sucesso e a validação pública aguarda o próximo redeploy.
+
+## Proteção do cliente contra respostas HTML do Vercel
+
+- [x] Detectar respostas não-JSON no fetch do tRPC e exibir uma mensagem operacional clara em vez de `Unexpected token '<'`.
+- [x] Adicionar teste unitário para o comportamento do fetch quando o deployment retorna HTML; `fetchGuard.test.ts` foi incluído no Vitest.
