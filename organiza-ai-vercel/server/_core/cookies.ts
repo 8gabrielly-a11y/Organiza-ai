@@ -1,4 +1,4 @@
-import type { Request } from "express";
+import type { HttpRequest } from "./httpTypes";
 
 type SessionCookieOptions = {
   domain?: string;
@@ -16,7 +16,7 @@ function isIpAddress(host: string) {
   return host.includes(":");
 }
 
-function isSecureRequest(req: Request) {
+function isSecureRequest(req: HttpRequest) {
   if (req.protocol === "https") return true;
 
   const forwardedProto = req.headers["x-forwarded-proto"];
@@ -30,7 +30,7 @@ function isSecureRequest(req: Request) {
 }
 
 export function getSessionCookieOptions(
-  req: Request
+  req: HttpRequest
 ): SessionCookieOptions {
   // const hostname = req.hostname;
   // const shouldSetDomain =

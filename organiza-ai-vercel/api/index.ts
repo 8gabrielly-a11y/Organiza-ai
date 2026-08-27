@@ -1,4 +1,5 @@
-import express, { type NextFunction, type Request, type Response } from "express";
+import express from "express";
+import type { HttpNext, HttpRequest, HttpResponse } from "../server/_core/httpTypes";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "../server/_core/oauth";
 import { registerStorageProxy } from "../server/_core/storageProxy";
@@ -13,7 +14,6 @@ const app = express();
 // Depending on the Vercel routing mode, a catch-all function can receive the
 // path with or without the `/api` prefix. Normalize it before route matching so
 // tRPC, OAuth and calendar endpoints behave identically in both cases.
-app.use((req: Request, _res: Response, next: NextFunction) => {
   if (!req.url.startsWith("/api")) {
     req.url = `/api${req.url.startsWith("/") ? req.url : `/${req.url}`}`;
   }
@@ -35,15 +35,15 @@ app.use(
   })
 );
 
-app.get("/api/health", (_req, res) => {
+app.get("/api/health", (_req: HttpRequest, res: HttpResponse) => {
   res.status(200).json({ ok: true, service: "organiza-ai" });
 });
 
-app.use((req, res) => {
+app.use((req: HttpRequest, res: HttpResponse) => {
   res.status(404).json({ error: "Not found", path: req.path });
 });
 
-app.use((error: unknown, _req: Request, res: Response, next: NextFunction) => {
+app.use((error: unknown, _req: HttpRequest, res: HttpResponse, next: HttpNext) => {
   if (res.headersSent) {
     next(error);
     return;

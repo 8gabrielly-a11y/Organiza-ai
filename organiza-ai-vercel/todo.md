@@ -515,7 +515,13 @@
 
 ## Erros adicionais do log completo do Vercel
 
-- [ ] Tipar `Request`, `Response`, `Express` e callbacks em `server/routers.ts`, `server/_core/oauth.ts`, `server/_core/storageProxy.ts` e `server/_core/sdk.ts`.
-- [ ] Tipar a normalização de protocolo e ajustar `CookieOptions` em `server/_core/cookies.ts`.
-- [ ] Executar o compilador com a mesma versão TypeScript detectada pelo Vercel e eliminar todos os erros restantes.
-- [ ] Recriar o ZIP final sem artefatos e documentar a configuração Node.js 22.x no Vercel.
+- [x] Tipar `Request`, `Response`, `Express` e callbacks em `server/routers.ts`, `server/_core/oauth.ts`, `server/_core/storageProxy.ts` e `server/_core/sdk.ts`.
+- [x] Tipar a normalização de protocolo e ajustar `CookieOptions` em `server/_core/cookies.ts`.
+- [x] Executar o compilador com a mesma versão TypeScript detectada pelo Vercel e eliminar todos os erros restantes.
+- [x] Recriar o ZIP final sem artefatos e documentar a configuração Node.js 22.x no Vercel.
+
+## Incompatibilidade persistente de tipos Express no Vercel
+
+- [ ] Unificar a resolução de `express` e `@types/express` no build remoto e eliminar os métodos ausentes em `Request`, `Response` e `Express`.
+- [ ] Validar o adaptador e as rotas com a configuração equivalente ao compilador do Vercel.
+- [ ] Recriar e testar o ZIP final após a correção definitiva.
