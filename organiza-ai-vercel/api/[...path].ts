@@ -1,4 +1,2 @@
-// Keep the extension explicit because Vercel executes the transpiled ESM file
-// under Node's strict module resolution rules.
+// Encaminha todas as rotas /api/* para o mesmo servidor Express/tRPC.
 export { default } from "./index.js";
-
