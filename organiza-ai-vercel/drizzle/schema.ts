@@ -31,7 +31,8 @@ export const userProfiles = mysqlTable("user_profiles", {
   email: varchar("email", { length: 320 }),
   geminiKeyEncrypted: text("geminiKeyEncrypted"),
   reminderScheduleUid: varchar("reminderScheduleUid", { length: 96 }),
-  reminderChannel: mysqlEnum("reminderChannel", ["chat", "email"]).notNull().default("chat"),
+  remindersEnabled: boolean("remindersEnabled").notNull().default(false),
+  reminderChannel: mysqlEnum("reminderChannel", ["chat", "email", "push", "both"]).notNull().default("chat"),
   reminderLeadMinutes: int("reminderLeadMinutes").notNull().default(30),
   quietHoursStartMinute: int("quietHoursStartMinute").notNull().default(1320),
   quietHoursEndMinute: int("quietHoursEndMinute").notNull().default(420),
@@ -129,6 +130,17 @@ export const plannerNotifications = mysqlTable("planner_notifications", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+export const pushSubscriptions = mysqlTable("push_subscriptions", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  endpoint: text("endpoint").notNull(),
+  endpointHash: varchar("endpointHash", { length: 64 }).notNull().unique(),
+  p256dh: text("p256dh").notNull(),
+  auth: text("auth").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
 export const calendarConnections = mysqlTable("calendar_connections", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull().unique(),
@@ -151,5 +163,6 @@ export type PlannerItem = typeof plannerItems.$inferSelect;
 export type ChatMessage = typeof chatMessages.$inferSelect;
 export type PlannerRoutine = typeof plannerRoutines.$inferSelect;
 export type PlannerNotification = typeof plannerNotifications.$inferSelect;
+export type PushSubscription = typeof pushSubscriptions.$inferSelect;
 export type UserFeedback = typeof userFeedback.$inferSelect;
 export type CalendarConnection = typeof calendarConnections.$inferSelect;

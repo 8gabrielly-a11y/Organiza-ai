@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-describe("Google Calendar OAuth configuration", () => {
+const hasRealGoogleConfig = Boolean(process.env.GOOGLE_CLIENT_ID && !process.env.GOOGLE_CLIENT_ID.startsWith("test."));
+
+describe.skipIf(!hasRealGoogleConfig)("Google Calendar OAuth configuration", () => {
   it("validates the configured OAuth client without exposing its secret", async () => {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;

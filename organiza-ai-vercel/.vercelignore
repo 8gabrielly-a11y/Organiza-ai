@@ -1,0 +1,10 @@
+.git
+.manus
+.manus-logs
+client/public/__manus__
+coverage
+dist
+node_modules
+references
+*.bak
+*.zip

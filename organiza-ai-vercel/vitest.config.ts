@@ -14,6 +14,11 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    env: {
+      GOOGLE_CLIENT_ID: "test.apps.googleusercontent.com",
+      GOOGLE_CLIENT_SECRET: "test-secret",
+      GOOGLE_REDIRECT_URI: "https://example.com/api/calendar/google/callback",
+    },
     include: ["server/**/*.test.ts", "server/**/*.spec.ts", "shared/**/*.test.ts", "client/**/*.test.ts", "client/**/*.test.tsx", "api/**/*.test.ts"],
   },
 });

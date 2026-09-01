@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { parse as parseCookie } from "cookie";
 import { TRPCError } from "@trpc/server";
 import crypto from "node:crypto";
 import { and, eq, gte, like, lte } from "drizzle-orm";
@@ -12,8 +11,7 @@ import { COOKIE_NAME } from "../shared/const";
 import { formatUserDateTime, isSameLocalDay, normalizeRelativeDateHint, parseWeekdayRoutine } from "../shared/calendar";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { createHeartbeatJob, deleteHeartbeatJob } from "./_core/heartbeat";
-import { createUserFeedback, getUserFeedback, getUserFeedbackForUser, respondToUserFeedback, createPasswordResetToken, consumePasswordResetToken, updateUserPassword, deleteUserAccount, clearUserChat, getDb, getPlannerSnapshot, ensureDefaultGroups, chatMessages, plannerGroups, plannerItems, getUserByEmail, getCalendarConnection, markUserFeedbackRead, removeCalendarConnection } from "./db";
+import { createUserFeedback, getUserFeedback, getUserFeedbackForUser, respondToUserFeedback, createPasswordResetToken, consumePasswordResetToken, updateUserPassword, deleteUserAccount, clearUserChat, getDb, getPlannerSnapshot, ensureDefaultGroups, chatMessages, plannerGroups, plannerItems, getUserByEmail, getCalendarConnection, getPushSubscriptions, markUserFeedbackRead, removeCalendarConnection, removePushSubscription, savePushSubscription } from "./db";
 import { cancelGoogleEvent, createGoogleEvent, getValidGoogleAccessToken, googleAuthorizationUrl, googleTitleForStatus, updateGoogleEvent } from "./googleCalendar";
 import { calendarConnections, plannerRoutines, plannerRoutineExceptions, plannerSubmodules, userProfiles } from "../drizzle/schema";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
@@ -325,9 +323,10 @@ export const appRouter = router({
   reminders: router({
     status: protectedProcedure.query(async ({ ctx }) => {
       const profile = await getOrCreateProfile(ctx.user.id, ctx.user.name, ctx.user.email);
-      return { enabled: Boolean(profile?.reminderScheduleUid), channel: profile?.reminderChannel ?? "chat", leadMinutes: profile?.reminderLeadMinutes ?? 30, quietStartMinute: profile?.quietHoursStartMinute ?? 1320, quietEndMinute: profile?.quietHoursEndMinute ?? 420 };
+      const subscriptions = await getPushSubscriptions(ctx.user.id);
+      return { enabled: Boolean(profile?.remindersEnabled), channel: profile?.reminderChannel ?? "chat", leadMinutes: profile?.reminderLeadMinutes ?? 30, quietStartMinute: profile?.quietHoursStartMinute ?? 1320, quietEndMinute: profile?.quietHoursEndMinute ?? 420, pushConfigured: Boolean(ENV.vapidPublicKey), pushSubscribed: subscriptions.length > 0, vapidPublicKey: ENV.vapidPublicKey || null };
     }),
-    updatePreferences: protectedProcedure.input(z.object({ channel: z.enum(["chat", "email"]), leadMinutes: z.number().int().min(5).max(1440), quietStartMinute: z.number().int().min(0).max(1439), quietEndMinute: z.number().int().min(0).max(1439) })).mutation(async ({ ctx, input }) => {
+    updatePreferences: protectedProcedure.input(z.object({ channel: z.enum(["chat", "email", "push", "both"]), leadMinutes: z.number().int().min(5).max(1440), quietStartMinute: z.number().int().min(0).max(1439), quietEndMinute: z.number().int().min(0).max(1439) })).mutation(async ({ ctx, input }) => {
       const db = await getDb(); if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       await db.update(userProfiles).set({ reminderChannel: input.channel, reminderLeadMinutes: input.leadMinutes, quietHoursStartMinute: input.quietStartMinute, quietHoursEndMinute: input.quietEndMinute }).where(eq(userProfiles.userId, ctx.user.id));
       return { success: true } as const;
@@ -336,23 +335,23 @@ export const appRouter = router({
       const db = await getDb(); if (!db) throw new Error("Database unavailable");
       const profile = await getOrCreateProfile(ctx.user.id, ctx.user.name, ctx.user.email);
       if (!profile) throw new Error("Perfil indisponível");
-      if (profile.reminderScheduleUid) return { enabled: true } as const;
-      const cookieHeader = typeof ctx.req.headers.cookie === "string" ? ctx.req.headers.cookie : "";
-      const sessionToken = parseCookie(cookieHeader)[COOKIE_NAME] ?? "";
-      const job = await createHeartbeatJob({ name: `organiza-reminders-${ctx.user.id}`, cron: "0 */15 * * * *", path: "/api/scheduled/reminders", description: "Lembretes conversacionais do Organiza AI" }, sessionToken);
-      await db.update(userProfiles).set({ reminderScheduleUid: job.taskUid }).where(eq(userProfiles.userId, ctx.user.id));
-      return { enabled: true, nextExecutionAt: job.nextExecutionAt ?? null } as const;
+      await db.update(userProfiles).set({ remindersEnabled: true }).where(eq(userProfiles.userId, ctx.user.id));
+      return { enabled: true } as const;
     }),
     disable: protectedProcedure.mutation(async ({ ctx }) => {
       const db = await getDb(); if (!db) throw new Error("Database unavailable");
       const profile = await getOrCreateProfile(ctx.user.id, ctx.user.name, ctx.user.email);
-      if (profile?.reminderScheduleUid) {
-        const cookieHeader = typeof ctx.req.headers.cookie === "string" ? ctx.req.headers.cookie : "";
-        const sessionToken = parseCookie(cookieHeader)[COOKIE_NAME] ?? "";
-        await deleteHeartbeatJob(profile.reminderScheduleUid, sessionToken);
-        await db.update(userProfiles).set({ reminderScheduleUid: null }).where(eq(userProfiles.userId, ctx.user.id));
-      }
+      if (profile) await db.update(userProfiles).set({ remindersEnabled: false }).where(eq(userProfiles.userId, ctx.user.id));
       return { enabled: false } as const;
+    }),
+    subscribePush: protectedProcedure.input(z.object({ endpoint: z.string().url().max(4000), keys: z.object({ p256dh: z.string().min(20).max(1000), auth: z.string().min(8).max(500) }) })).mutation(async ({ ctx, input }) => {
+      if (!ENV.vapidPublicKey || !ENV.vapidPrivateKey) throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Notificações push ainda não foram configuradas no servidor." });
+      await savePushSubscription(ctx.user.id, input);
+      return { success: true } as const;
+    }),
+    unsubscribePush: protectedProcedure.input(z.object({ endpoint: z.string().url().max(4000) })).mutation(async ({ ctx, input }) => {
+      await removePushSubscription(ctx.user.id, input.endpoint);
+      return { success: true } as const;
     }),
   }),
   calendar: router({

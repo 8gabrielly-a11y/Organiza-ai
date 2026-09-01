@@ -21,7 +21,7 @@ describe("conversational reminders", () => {
   });
 
   it("deduplicates by planner item and planned time", () => {
-    expect(upcomingReminderDedupeKey(10, 1000)).toBe("upcoming:10:1000");
+    expect(upcomingReminderDedupeKey(10, 1000)).toBe("upcoming:chat:10:1000");
     expect(upcomingReminderDedupeKey(11, 1000)).not.toBe(upcomingReminderDedupeKey(10, 1000));
     expect(upcomingReminderDedupeKey(10, 2000)).not.toBe(upcomingReminderDedupeKey(10, 1000));
   });

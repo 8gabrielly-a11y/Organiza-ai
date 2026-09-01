@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { and, asc, desc, eq, gte, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, calendarConnections, chatMessages, passwordResetTokens, plannerGroups, plannerItems, plannerNotifications, users, userFeedback, plannerSubmodules, plannerRoutines, userProfiles } from "../drizzle/schema";
+import { InsertUser, calendarConnections, chatMessages, passwordResetTokens, plannerGroups, plannerItems, plannerNotifications, pushSubscriptions, users, userFeedback, plannerSubmodules, plannerRoutines, userProfiles } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -72,6 +72,7 @@ export async function deleteUserAccount(userId: number) {
   await db.transaction(async tx => {
     await tx.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, userId));
     await tx.delete(plannerNotifications).where(eq(plannerNotifications.userId, userId));
+    await tx.delete(pushSubscriptions).where(eq(pushSubscriptions.userId, userId));
     await tx.delete(userFeedback).where(eq(userFeedback.userId, userId));
     await tx.delete(chatMessages).where(eq(chatMessages.userId, userId));
     await tx.delete(plannerItems).where(eq(plannerItems.userId, userId));
@@ -133,8 +134,32 @@ export async function getUpcomingItems(userId: number, start: number, end: numbe
 
 export async function createPlannerNotification(values: { userId: number; plannerItemId: number; kind: string; dedupeKey: string; content: string }) {
   const db = await getDb(); if (!db) return false;
-  const result = await db.insert(plannerNotifications).values(values).onDuplicateKeyUpdate({ set: { content: values.content } });
-  return Number(result[0].affectedRows ?? 0) > 0;
+  const existing = await db.select({ id: plannerNotifications.id }).from(plannerNotifications).where(eq(plannerNotifications.dedupeKey, values.dedupeKey)).limit(1);
+  if (existing.length) return false;
+  await db.insert(plannerNotifications).values(values);
+  return true;
+}
+
+export async function getEnabledReminderProfiles() {
+  const db = await getDb(); if (!db) return [];
+  return db.select().from(userProfiles).where(eq(userProfiles.remindersEnabled, true));
+}
+
+export async function getPushSubscriptions(userId: number) {
+  const db = await getDb(); if (!db) return [];
+  return db.select().from(pushSubscriptions).where(eq(pushSubscriptions.userId, userId));
+}
+
+export async function savePushSubscription(userId: number, subscription: { endpoint: string; keys: { p256dh: string; auth: string } }) {
+  const db = await getDb(); if (!db) throw new Error("Database unavailable");
+  const endpointHash = crypto.createHash("sha256").update(subscription.endpoint).digest("hex");
+  await db.insert(pushSubscriptions).values({ userId, endpoint: subscription.endpoint, endpointHash, p256dh: subscription.keys.p256dh, auth: subscription.keys.auth }).onDuplicateKeyUpdate({ set: { userId, endpoint: subscription.endpoint, p256dh: subscription.keys.p256dh, auth: subscription.keys.auth } });
+}
+
+export async function removePushSubscription(userId: number, endpoint: string) {
+  const db = await getDb(); if (!db) return;
+  const endpointHash = crypto.createHash("sha256").update(endpoint).digest("hex");
+  await db.delete(pushSubscriptions).where(and(eq(pushSubscriptions.userId, userId), eq(pushSubscriptions.endpointHash, endpointHash)));
 }
 
 export async function getRecentPlannerNotifications(userId: number, limit = 20) {

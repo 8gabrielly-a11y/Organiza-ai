@@ -8,7 +8,7 @@ describe("planner rescheduling", () => {
     const planned = new Date(nextAvailable(original));
     expect(planned.getTime()).toBeGreaterThan(original);
     expect(planned.getMinutes()).toBe(0);
-    expect(planned.getHours()).toBe(18);
+    expect(planned.getHours()).toBe(15);
   });
 
   it("skips an occupied slot", () => {

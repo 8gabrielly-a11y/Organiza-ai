@@ -1,6 +1,7 @@
 import { createServer, type Server } from "node:http";
 import { afterEach, describe, expect, it } from "vitest";
 import handler, { app } from "./index";
+import catchAllHandler from "./[...path]";
 
 const servers: Server[] = [];
 
@@ -25,6 +26,13 @@ afterEach(async () => {
 });
 
 describe("Vercel Express adapter", () => {
+  it("loads the catch-all entrypoint and responds with JSON", async () => {
+    const { baseUrl } = await startTestServer(catchAllHandler);
+    const response = await fetch(`${baseUrl}/api/health`);
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({ ok: true, service: "organiza-ai" });
+  });
+
   it("invokes the explicit Node handler and responds with JSON", async () => {
     const { baseUrl } = await startTestServer(handler);
     const response = await fetch(`${baseUrl}/api/health`);

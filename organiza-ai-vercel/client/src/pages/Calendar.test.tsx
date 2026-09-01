@@ -1,6 +1,6 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Calendar from "./Calendar";
 
 const plannerState = vi.hoisted(() => ({ result: { data: undefined as unknown, isLoading: false, isError: false } }));
@@ -18,6 +18,15 @@ vi.mock("@/lib/trpc", () => ({ trpc: { profile: { get: { useQuery: () => ({ data
 vi.mock("wouter", () => ({ useLocation: () => ["/calendar", vi.fn()] }));
 
 describe("Calendar page rendering contract", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 7, 27, 12, 0));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
   it("renders loading, error and empty states through the page", () => {
     plannerState.result = { data: undefined, isLoading: true, isError: false };
     expect(renderToStaticMarkup(<Calendar />)).toContain('role="status"');
