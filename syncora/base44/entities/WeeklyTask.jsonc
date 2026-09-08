@@ -1,0 +1,24 @@
+{
+  "name": "WeeklyTask",
+  "type": "object",
+  "properties": {
+    "group_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "day_of_week": {
+      "type": "number",
+      "description": "0=Dom a 6=S\u00e1b"
+    },
+    "last_done_week": {
+      "type": "string",
+      "description": "Marcador da semana em que foi conclu\u00edda (ex: 2026-W35)"
+    }
+  },
+  "required": [
+    "group_id",
+    "name"
+  ]
+}

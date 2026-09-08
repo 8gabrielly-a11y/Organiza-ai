@@ -1,0 +1,85 @@
+{
+  "name": "Commitment",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "group_id": {
+      "type": "string"
+    },
+    "parent_id": {
+      "type": "string",
+      "description": "Se preenchido, é uma sub-tarefa de um compromisso"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "done",
+        "skipped",
+        "rescheduled"
+      ],
+      "default": "pending"
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "scheduled_time": {
+      "type": "string"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "Horário de fim (para blocos recorrentes)"
+    },
+    "location": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "chat",
+        "manual",
+        "google"
+      ],
+      "default": "chat"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "ID externo (ex: Google Calendar event id) para dedup na sincronização"
+    },
+    "is_recurring": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se true, repete semanalmente nos dias de rrule_days"
+    },
+    "rrule_days": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Dias da semana em que repete (0=Dom a 6=Sáb)"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "default": 60,
+      "description": "Duração estimada quando end_time não estiver preenchido"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

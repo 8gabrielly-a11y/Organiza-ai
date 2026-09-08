@@ -1,1 +1,0 @@
-ALTER TABLE `planner_items` ADD `parentItemId` int;

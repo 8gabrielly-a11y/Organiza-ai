@@ -1,0 +1,16 @@
+{
+  "name": "AssistantReminder",
+  "type": "object",
+  "properties": {
+    "owner_user_id": { "type": "string", "description": "Usuário dono do lembrete" },
+    "item_type": { "type": "string", "enum": ["task", "commitment", "system"] },
+    "item_id": { "type": "string" },
+    "reminder_key": { "type": "string", "description": "Chave única lógica usada para impedir notificações duplicadas" },
+    "kind": { "type": "string", "enum": ["upcoming", "start", "missed", "rescheduled", "deadline_risk", "follow_up"] },
+    "title": { "type": "string" },
+    "message": { "type": "string" },
+    "triggered_at": { "type": "string", "format": "date-time" },
+    "read": { "type": "boolean", "default": false }
+  },
+  "required": ["reminder_key", "kind", "message"]
+}

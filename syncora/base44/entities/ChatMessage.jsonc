@@ -1,0 +1,29 @@
+{
+  "name": "ChatMessage",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "user",
+        "assistant"
+      ]
+    },
+    "content": {
+      "type": "string"
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "group_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "role",
+    "content"
+  ]
+}

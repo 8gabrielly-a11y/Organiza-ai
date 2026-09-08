@@ -1,0 +1,16 @@
+{
+  "name": "PushSubscription",
+  "type": "object",
+  "properties": {
+    "owner_user_id": { "type": "string", "description": "ID do usuário dono desta assinatura" },
+    "endpoint": { "type": "string" },
+    "p256dh": { "type": "string" },
+    "auth": { "type": "string" },
+    "user_agent": { "type": "string" },
+    "device_label": { "type": "string" },
+    "enabled": { "type": "boolean", "default": true },
+    "last_seen_at": { "type": "string", "format": "date-time" },
+    "last_error": { "type": "string" }
+  },
+  "required": ["owner_user_id", "endpoint", "p256dh", "auth"]
+}

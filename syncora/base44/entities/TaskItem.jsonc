@@ -1,0 +1,32 @@
+{
+  "name": "TaskItem",
+  "type": "object",
+  "properties": {
+    "group_id": { "type": "string" },
+    "name": { "type": "string" },
+    "done": { "type": "boolean", "default": false },
+    "order": { "type": "number", "default": 0 },
+    "due_date": { "type": "string", "format": "date", "description": "Prazo final da tarefa" },
+    "deadline_time": { "type": "string", "description": "Horário limite no dia do prazo (HH:MM)" },
+    "planned_date": { "type": "string", "format": "date", "description": "Dia em que o Syncora planejou executar a tarefa" },
+    "scheduled_time": { "type": "string", "description": "Horário planejado de início (HH:MM)" },
+    "scheduled_end_time": { "type": "string", "description": "Horário planejado de fim (HH:MM)" },
+    "duration_minutes": { "type": "number", "default": 60, "description": "Duração estimada da tarefa em minutos" },
+    "earliest_date": { "type": "string", "format": "date", "description": "Primeiro dia em que a tarefa pode ser executada" },
+    "earliest_time": { "type": "string", "description": "Primeiro horário possível no earliest_date (HH:MM)" },
+    "priority": { "type": "string", "enum": ["low", "medium", "high"], "default": "medium" },
+    "energy_level": { "type": "string", "enum": ["low", "medium", "high"], "default": "medium" },
+    "splittable": { "type": "boolean", "default": false },
+    "minimum_block_minutes": { "type": "number", "default": 30 },
+    "preferred_period": { "type": "string", "enum": ["any", "morning", "afternoon", "evening"], "default": "any" },
+    "planning_status": {
+      "type": "string",
+      "enum": ["unscheduled", "scheduled", "started", "snoozed", "missed", "rescheduled", "completed"],
+      "default": "unscheduled"
+    },
+    "snoozed_until": { "type": "string", "format": "date-time" },
+    "last_rescheduled_at": { "type": "string", "format": "date-time" },
+    "reschedule_count": { "type": "number", "default": 0 }
+  },
+  "required": ["group_id", "name"]
+}

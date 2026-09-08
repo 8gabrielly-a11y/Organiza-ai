@@ -1,0 +1,30 @@
+{
+  "name": "MealPlan",
+  "type": "object",
+  "properties": {
+    "group_id": {
+      "type": "string"
+    },
+    "day_of_week": {
+      "type": "number",
+      "description": "0=Dom a 6=S\u00e1b"
+    },
+    "meal_type": {
+      "type": "string",
+      "enum": [
+        "cafe",
+        "almoco",
+        "jantar"
+      ],
+      "default": "almoco"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "group_id",
+    "day_of_week",
+    "description"
+  ]
+}

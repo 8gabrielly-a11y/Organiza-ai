@@ -1,0 +1,47 @@
+{
+  "name": "Group",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string",
+      "default": "#6366f1"
+    },
+    "icon": {
+      "type": "string",
+      "default": "Circle"
+    },
+    "order": {
+      "type": "number",
+      "default": 0
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "padrao",
+        "casa"
+      ],
+      "default": "padrao"
+    },
+    "parent_id": {
+      "type": "string",
+      "description": "Se preenchido, \u00e9 um subgrupo"
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "time_window": {
+      "type": "string",
+      "description": "Janela de hor\u00e1rio preferida do grupo (ex: 09:00-18:00)",
+      "default": ""
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "name": "UserSettings",
+  "type": "object",
+  "properties": {
+    "user_name": {
+      "type": "string",
+      "description": "Como o sistema deve chamar o usuário"
+    },
+    "tone": {
+      "type": "string",
+      "enum": [
+        "amigo",
+        "coach",
+        "neutro",
+        "direto"
+      ],
+      "default": "amigo"
+    },
+    "gemini_api_key": {
+      "type": "string",
+      "description": "Chave da API do Google Gemini do próprio usuário"
+    },
+    "onboarded": {
+      "type": "boolean",
+      "default": false
+    },
+    "notifications_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "voice_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "agenda_color_mode": {
+      "type": "string",
+      "enum": [
+        "grupo",
+        "tipo"
+      ],
+      "default": "grupo",
+      "description": "Como colorir itens na agenda: por grupo ou por tipo (tarefa vs compromisso)"
+    },
+    "task_color": {
+      "type": "string",
+      "default": "#f59e0b",
+      "description": "Cor das tarefas quando agenda_color_mode = tipo"
+    },
+    "commitment_color": {
+      "type": "string",
+      "default": "#3b82f6",
+      "description": "Cor dos compromissos quando agenda_color_mode = tipo"
+    },
+    "task_opacity": {
+      "type": "number",
+      "default": 100,
+      "description": "Opacidade do preenchimento das tarefas (0-100) quando modo = tipo"
+    },
+    "commitment_opacity": {
+      "type": "number",
+      "default": 18,
+      "description": "Opacidade do preenchimento dos compromissos (0-100) quando modo = tipo"
+    },
+    "timezone": {
+      "type": "string",
+      "default": "America/Sao_Paulo",
+      "description": "Fuso horário usado pelo planejamento"
+    }
+  },
+  "required": [
+    "user_name"
+  ]
+}

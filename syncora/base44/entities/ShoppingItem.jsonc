@@ -1,0 +1,27 @@
+{
+  "name": "ShoppingItem",
+  "type": "object",
+  "properties": {
+    "group_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "quantity": {
+      "type": "string"
+    },
+    "done": {
+      "type": "boolean",
+      "default": false
+    },
+    "order": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "group_id",
+    "name"
+  ]
+}
